@@ -1,0 +1,99 @@
+﻿@model Forum.Models.Thread
+@helper ViewComments(ICollection<Forum.Models.Comment> thread)
+{
+    foreach (var comment in thread)
+    {
+        <li>
+            @if (comment.Comment1.Count() == 0)
+            {
+                <div class="comment">
+                    <div class="block">
+                        <p>@comment.Content</p>
+                    </div>
+                    <p class="blockInfo">@comment.UserName | @comment.Date.ToString("dd/MM/yy")</p>
+                    <p>@Html.ActionLink("Reply", "ReplyToComment", "Comments", new { id = comment.CommentId }, null)</p>
+                    @if (User.Identity.IsAuthenticated &&
+                        User.Identity.Name.Equals(comment.UserName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        <p>@Html.ActionLink("Edit", "Edit", "Comments", new { id = comment.CommentId }, null)</p>
+                    }
+                    @if ((User.Identity.IsAuthenticated &&
+                        User.Identity.Name.Equals(comment.UserName, StringComparison.OrdinalIgnoreCase)) ||
+                            User.Identity.Name.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <p>@Html.ActionLink("Delete", "Delete", "Comments", new { id = comment.CommentId }, null)</p>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="comment">
+                    <div class="block">
+                        <p>@comment.Content</p>
+                    </div>
+                    <p class="blockInfo">@comment.UserName | @comment.Date.ToString("dd/MM/yy")</p>
+                    <p>@Html.ActionLink("Reply", "ReplyToComment", "Comments", new { id = comment.CommentId }, null)</p>
+                    @if (User.Identity.IsAuthenticated &&
+                        User.Identity.Name.Equals(comment.UserName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        <p>@Html.ActionLink("Edit", "Edit", "Comments", new { id = comment.CommentId }, null)</p>
+                    }
+                    @if ((User.Identity.IsAuthenticated &&
+                        User.Identity.Name.Equals(comment.UserName, StringComparison.OrdinalIgnoreCase)) ||
+                            User.Identity.Name.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <p>@Html.ActionLink("Delete", "Delete", "Comments", new { id = comment.CommentId }, null)</p>
+                    }
+                </div>
+
+                <ul>
+                    @ViewComments(comment.Comment1)
+                </ul>
+            }
+        </li>
+    }
+}
+
+
+
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<div>
+    <div id="header">
+        <p id="title">@Html.DisplayFor(model => model.Title)</p>
+        <p id="username">Publisher: @Html.DisplayFor(model => model.User.UserName)</p>
+        <p id="date">@Html.DisplayNameFor(model => model.Date): @Html.DisplayFor(model => model.Date)</p>
+    </div>
+
+    <hr />
+    <div id="content">
+        <p>@Html.DisplayFor(model => model.Content)</p>
+    </div>
+
+    <div id="details">
+        <p id="views">@Html.DisplayNameFor(model => model.Views): @Html.DisplayFor(model => model.Views)</p>
+        <p id="upvotes">@Html.DisplayNameFor(model => model.Upvotes): @Html.DisplayFor(model => model.Upvotes)</p>
+    </div>
+</div>
+<button class="btn btn-primary" onclick="location.href='@Url.Action("Upvote","Home", new { id=Model.ThreadId})';return false;">Upvote</button>
+
+<p id="back">
+    @if ((User.Identity.IsAuthenticated && User.Identity.Name == Model.UserName) ||
+                            User.Identity.Name.Equals("admin", StringComparison.OrdinalIgnoreCase))
+    {
+        @Html.ActionLink("Edit", "Edit", new { id = Model.ThreadId }) @:|
+    }
+
+    @Html.ActionLink("Back to Forum List", "Index")
+</p>
+
+<div id="comments">
+    <p id="comment-title">Comments</p>
+    <p id="clickComment">@Html.ActionLink("Write a comment", "Create", "Comments", new { id = Model.ThreadId }, null)</p>
+    <ul>
+        @ViewComments(ViewBag.Comment)
+    </ul>
+</div>

@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Forum.Models.Thread>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Forums</h2>
+<p>
+    Search Forums:
+    @using (Html.BeginForm("Index", "Search"))
+    {
+        @Html.TextBox("keyword");
+        <input type="submit" value="Search" style="" />
+    }
+</p>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Views)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Upvotes)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.User.UserName)
+        </th>
+        <th> Tags</th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Views)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Upvotes)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.User.UserName)
+        </td>
+        <td>
+            @foreach (var t in item.TagThreads)
+            {
+                @Html.DisplayFor(m => t.Tag.TagText) <br />
+            }
+        </td>
+        <td>
+            @Html.ActionLink("View", "Details", new { id = item.ThreadId })
+            @if ((User.Identity.IsAuthenticated &&
+                User.Identity.Name.Equals(item.UserName, StringComparison.OrdinalIgnoreCase)) ||
+                    User.Identity.Name.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            {
+                @: |
+                @Html.ActionLink("Edit", "Edit", new { id = item.ThreadId }) @:|
+                @Html.ActionLink("Delete", "Delete", new { id = item.ThreadId })
+            }
+        </td>
+    </tr>
+}
+
+</table>

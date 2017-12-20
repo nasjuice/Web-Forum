@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ForumModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Comment">
+    <Key>
+      <PropertyRef Name="CommentId" />
+    </Key>
+    <Property Name="CommentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ThreadId" Type="Int32" Nullable="false" />
+    <Property Name="ParentCommentId" Type="Int32" />
+    <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Comment1" Relationship="Self.FK_Comment_ToComment" FromRole="Comment" ToRole="Comment1" />
+    <NavigationProperty Name="Comment2" Relationship="Self.FK_Comment_ToComment" FromRole="Comment1" ToRole="Comment" />
+    <NavigationProperty Name="Thread" Relationship="Self.FK_Comment_ToThread" FromRole="Comment" ToRole="Thread" />
+    <NavigationProperty Name="User" Relationship="Self.FK_Comment_ToUsers" FromRole="Comment" ToRole="Users" />
+  </EntityType>
+  <EntityType Name="Tag">
+    <Key>
+      <PropertyRef Name="TagId" />
+    </Key>
+    <Property Name="TagId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TagText" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="TagThreads" Relationship="Self.FK_TagThread_ToTag" FromRole="Tag" ToRole="TagThread" />
+  </EntityType>
+  <EntityType Name="TagThread">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TagId" Type="Int32" Nullable="false" />
+    <Property Name="ThreadId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Tag" Relationship="Self.FK_TagThread_ToTag" FromRole="TagThread" ToRole="Tag" />
+    <NavigationProperty Name="Thread" Relationship="Self.FK_TagThread_ToThread" FromRole="TagThread" ToRole="Thread" />
+  </EntityType>
+  <EntityType Name="Thread">
+    <Key>
+      <PropertyRef Name="ThreadId" />
+    </Key>
+    <Property Name="ThreadId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="Views" Type="Int32" Nullable="false" />
+    <Property Name="Upvotes" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Comments" Relationship="Self.FK_Comment_ToThread" FromRole="Thread" ToRole="Comment" />
+    <NavigationProperty Name="TagThreads" Relationship="Self.FK_TagThread_ToThread" FromRole="Thread" ToRole="TagThread" />
+    <NavigationProperty Name="User" Relationship="Self.FK_Thread_ToUsers" FromRole="Thread" ToRole="Users" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="UserName" />
+    </Key>
+    <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="LastName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="FirstName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ImgPath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Interests" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Comments" Relationship="Self.FK_Comment_ToUsers" FromRole="Users" ToRole="Comment" />
+    <NavigationProperty Name="Threads" Relationship="Self.FK_Thread_ToUsers" FromRole="Users" ToRole="Thread" />
+  </EntityType>
+  <Association Name="FK_Comment_ToComment">
+    <End Role="Comment" Type="Self.Comment" Multiplicity="0..1" />
+    <End Role="Comment1" Type="Self.Comment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Comment">
+        <PropertyRef Name="CommentId" />
+      </Principal>
+      <Dependent Role="Comment1">
+        <PropertyRef Name="ParentCommentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Comment_ToThread">
+    <End Role="Thread" Type="Self.Thread" Multiplicity="1" />
+    <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Thread">
+        <PropertyRef Name="ThreadId" />
+      </Principal>
+      <Dependent Role="Comment">
+        <PropertyRef Name="ThreadId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Comment_ToUsers">
+    <End Role="Users" Type="Self.User" Multiplicity="1" />
+    <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="UserName" />
+      </Principal>
+      <Dependent Role="Comment">
+        <PropertyRef Name="UserName" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TagThread_ToTag">
+    <End Role="Tag" Type="Self.Tag" Multiplicity="1" />
+    <End Role="TagThread" Type="Self.TagThread" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tag">
+        <PropertyRef Name="TagId" />
+      </Principal>
+      <Dependent Role="TagThread">
+        <PropertyRef Name="TagId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TagThread_ToThread">
+    <End Role="Thread" Type="Self.Thread" Multiplicity="1" />
+    <End Role="TagThread" Type="Self.TagThread" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Thread">
+        <PropertyRef Name="ThreadId" />
+      </Principal>
+      <Dependent Role="TagThread">
+        <PropertyRef Name="ThreadId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Thread_ToUsers">
+    <End Role="Users" Type="Self.User" Multiplicity="1" />
+    <End Role="Thread" Type="Self.Thread" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="UserName" />
+      </Principal>
+      <Dependent Role="Thread">
+        <PropertyRef Name="UserName" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ForumDb" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Comments" EntityType="Self.Comment" />
+    <EntitySet Name="Tags" EntityType="Self.Tag" />
+    <EntitySet Name="TagThreads" EntityType="Self.TagThread" />
+    <EntitySet Name="Threads" EntityType="Self.Thread" />
+    <EntitySet Name="Users" EntityType="Self.User" />
+    <AssociationSet Name="FK_Comment_ToComment" Association="Self.FK_Comment_ToComment">
+      <End Role="Comment" EntitySet="Comments" />
+      <End Role="Comment1" EntitySet="Comments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Comment_ToThread" Association="Self.FK_Comment_ToThread">
+      <End Role="Thread" EntitySet="Threads" />
+      <End Role="Comment" EntitySet="Comments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Comment_ToUsers" Association="Self.FK_Comment_ToUsers">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Comment" EntitySet="Comments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TagThread_ToTag" Association="Self.FK_TagThread_ToTag">
+      <End Role="Tag" EntitySet="Tags" />
+      <End Role="TagThread" EntitySet="TagThreads" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TagThread_ToThread" Association="Self.FK_TagThread_ToThread">
+      <End Role="Thread" EntitySet="Threads" />
+      <End Role="TagThread" EntitySet="TagThreads" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Thread_ToUsers" Association="Self.FK_Thread_ToUsers">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Thread" EntitySet="Threads" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

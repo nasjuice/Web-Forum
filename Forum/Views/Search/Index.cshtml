@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Forum.Models.Thread>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Search</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Views)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Upvotes)
+        </th>
+       
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.Date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Views)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Upvotes)
+        </td>
+   
+        <td>
+            @Html.ActionLink("View", "Details", "Home", new { id = item.ThreadId }, null)
+            @if ((User.Identity.IsAuthenticated &&
+                User.Identity.Name.Equals(item.UserName, StringComparison.OrdinalIgnoreCase)) ||
+                    User.Identity.Name.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            {
+                @: |
+                @Html.ActionLink("Edit", "Edit", "Home", new { id = item.ThreadId }, null) @:|
+                @Html.ActionLink("Delete", "Delete", "Home", new { id = item.ThreadId }, null)
+            }
+        </td>
+    </tr>
+}
+
+</table>

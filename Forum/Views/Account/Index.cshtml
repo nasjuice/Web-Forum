@@ -1,0 +1,84 @@
+﻿@model IEnumerable<Forum.Models.User>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@if(User.Identity.Name.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+{
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Password)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LastName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.City)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Country)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImgPath)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Interests)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Password)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LastName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FirstName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.City)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Country)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ImgPath)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Interests)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.UserName }) |
+            @Html.ActionLink("Details", "Details", new { id=item.UserName }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.UserName })
+        </td>
+    </tr>
+}
+
+</table>
+}
+
+else
+{
+    <h2>You don't have permission to access this page</h2>
+}

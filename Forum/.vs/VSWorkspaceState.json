@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\App_Start",
+    "\\Controllers",
+    "\\Models",
+    "\\Validators",
+    "\\Views",
+    "\\Views\\Account"
+  ],
+  "SelectedNode": "\\App_Start\\RouteConfig.cs",
+  "PreviewInSolutionExplorer": false
+}
